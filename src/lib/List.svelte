@@ -2,6 +2,7 @@
   import { parseTauriCommand } from "/src/utils/generics";
   import type { Project } from "src/project";
   import { Link, Router } from "svelte-routing";
+  import Deleted from "./Deleted.svelte";
 
   let list: Project[] = [];
 
@@ -12,6 +13,9 @@
       console.error(error);
     }
   }
+  async function updateProject() {
+    await getList();
+  }
 </script>
 
 <div>
@@ -21,7 +25,10 @@
   <ul>
     {#each list as item}
       <li>
-        <h2>{item.name}</h2>
+        <div>
+          <h2>{item.name}</h2>
+          <Deleted on:deleted={updateProject} id={item.id} />
+        </div>
         <p>{item.description}</p>
         <p>{item.status}</p>
         <img src={item.logo} alt="" />

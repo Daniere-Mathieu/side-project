@@ -1,8 +1,9 @@
 <script lang="ts">
   import type { Project } from "src/project";
   import { parseTauriCommand } from "/src/utils/generics";
+  import { onMount } from "svelte";
 
-  let id = 5;
+  let id = 1;
   async function getData() {
     try {
       let temp = await parseTauriCommand<Project>("get_project", { id });
@@ -11,8 +12,10 @@
       console.error(error);
     }
   }
+  onMount(() => {
+    getData();
+  });
 </script>
 
 <h1>Details Page</h1>
-<button on:click={getData}>Get Data</button>
 <p>Project ID: {id}</p>

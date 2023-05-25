@@ -4,13 +4,14 @@
 use serde::{Deserialize, Serialize};
 use serde_json;
 use std::env;
+use std::fmt;
 use std::fs::{self};
 use std::fs::{File, OpenOptions};
 use std::io::{self};
 use std::io::{Read, Write};
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 
 struct Project {
     id: u32,
@@ -22,15 +23,23 @@ struct Project {
     logo: Option<String>,
 }
 
+impl fmt::Display for Project {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", self)
+    }
+}
+
 fn store_projects(
     projects: &Vec<Project>,
     file_path: &str,
 ) -> Result<(), Box<dyn std::error::Error>> {
-    let json = serde_json::to_string(projects)?;
+    let json = serde_json::to_string(&projects)?;
+
     let mut file = OpenOptions::new()
         .write(true)
         .create(true)
         .open(file_path)?;
+
     file.write_all(json.as_bytes())?;
     Ok(())
 }
@@ -51,6 +60,12 @@ fn read_projects(file_path: &str) -> Result<Vec<Project>, Box<dyn std::error::Er
             let mut file = File::create(file_path)?;
             file.write_all(json.as_bytes())?;
             projects
+        }
+        Err(ref err) if err.kind() == io::ErrorKind::UnexpectedEof => {
+            println!("here");
+            let projects = Vec::new();
+            projects
+            // ! handle if object is empty
         }
         Err(err) => return Err(Box::new(err)),
     };
@@ -88,6 +103,16 @@ fn get_project(id: u32) -> Project {
     final_project
 }
 #[tauri::command]
+async fn delete_project(id: u32) {
+    let mut projects = get_projects();
+    if let Some(pos) = projects.iter().position(|project| project.id == id) {
+        let _trash = projects.remove(pos);
+        store_projects(&projects, &get_file_path()).unwrap();
+    } else {
+        println!("Project with ID {} not found.", id);
+    }
+}
+#[tauri::command]
 fn get_projects() -> Vec<Project> {
     let file_path = get_file_path();
     let projects = read_projects(&file_path).unwrap();
@@ -96,9 +121,11 @@ fn get_projects() -> Vec<Project> {
 #[tauri::command]
 fn add_project(mut project: Project) -> bool {
     let mut projects = get_projects();
-    println!("{}", projects.len() - 1);
-    let id = projects[projects.len() - 1].id + 1;
-    project.id = id;
+    if projects.len() == 0 {
+        project.id = 1;
+    } else {
+        project.id = projects[projects.len() - 1].id + 1;
+    }
     projects.push(project);
     store_projects(&projects, &get_file_path()).unwrap();
     return true;
@@ -109,7 +136,8 @@ fn main() {
         .invoke_handler(tauri::generate_handler![
             get_project,
             get_projects,
-            add_project
+            add_project,
+            delete_project,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
