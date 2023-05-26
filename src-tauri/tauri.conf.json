@@ -4,11 +4,11 @@
     "beforeBuildCommand": "pnpm build",
     "devPath": "http://localhost:1420",
     "distDir": "../dist",
-    "withGlobalTauri": false
+    "withGlobalTauri": true
   },
   "package": {
     "productName": "side-project",
-    "version": "0.0.0"
+    "version": "0.0.1"
   },
   "tauri": {
     "allowlist": {
@@ -16,6 +16,22 @@
       "shell": {
         "all": false,
         "open": true
+      },
+      "dialog": {
+        "all": false,
+        "ask": false,
+        "confirm": false,
+        "message": false,
+        "open": true,
+        "save": true
+      },
+      "notification": {
+        "all": true
+      },
+      "protocol": {
+        "all": false,
+        "asset": true,
+        "assetScope": ["**"]
       }
     },
     "bundle": {
@@ -27,7 +43,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.tauri.dev",
+      "identifier": "com.side-project.app",
       "targets": "all"
     },
     "security": {
@@ -41,8 +57,12 @@
         "fullscreen": false,
         "resizable": true,
         "title": "side-project",
-        "width": 800,
-        "height": 600
+        "width": 1200,
+        "height": 1200,
+        "minHeight": 800,
+        "minWidth": 600,
+        "maximized": true,
+        "decorations": true
       }
     ]
   }

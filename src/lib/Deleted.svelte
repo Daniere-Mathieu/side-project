@@ -1,6 +1,7 @@
 <script lang="ts">
   import { parseTauriCommand } from "/src/utils/generics";
   import { createEventDispatcher } from "svelte";
+  import IoMdTrash from "svelte-icons/io/IoMdTrash.svelte";
   const dispatch = createEventDispatcher();
 
   export let id: number;
@@ -10,4 +11,4 @@
   }
 </script>
 
-<button on:click={deleteProject}>Delete</button>
+<div class="delete"><IoMdTrash on:click={deleteProject} title="delete" /></div>
