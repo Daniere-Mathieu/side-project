@@ -24,6 +24,9 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
       - name: install Pnpm
         run: yarn global add pnpm 
+      - name: setup pnpm on windows-latest
+        if: matrix.platform == 'windows-latest'
+        run: iwr https://get.pnpm.io/install.ps1 -useb | iex
       - name: install dependencies (ubuntu only)
         if: matrix.platform == 'ubuntu-20.04'
         run: |
