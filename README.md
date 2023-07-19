@@ -1,7 +1,32 @@
-# Tauri + Svelte + Typescript
+<h1 align="center">Welcome to side-project 👋</h1>
+<p>
+  <img alt="Version" src="https://img.shields.io/badge/version-0.0.0-blue.svg?cacheSeconds=2592000" />
+</p>
 
-This template should help get you started developing with Tauri, Svelte and TypeScript in Vite.
+> keep your side project in mind with this desktop application
 
-## Recommended IDE Setup
+## Install
 
-[VS Code](https://code.visualstudio.com/) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer).
+```sh
+pnpm install
+```
+
+## Usage
+
+```sh
+pnpm tauri dev
+```
+
+## Author
+
+👤 **Mathieu Daniere**
+
+* Website: https://daniere-mathieu.github.io/Portfolio/
+* Github: [@Daniere-Mathieu](https://github.com/Daniere-Mathieu)
+
+## Show your support
+
+Give a ⭐️ if this project helped you!
+
+***
+_This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)_

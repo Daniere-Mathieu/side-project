@@ -11,4 +11,6 @@
   }
 </script>
 
-<div class="delete"><IoMdTrash on:click={deleteProject} title="delete" /></div>
+<div class="delete yellow-text">
+  <IoMdTrash on:click={deleteProject} title="delete" />
+</div>
