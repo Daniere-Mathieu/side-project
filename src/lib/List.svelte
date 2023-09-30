@@ -12,6 +12,11 @@
 
   let list: Project[] = [];
 
+  /**
+   * @description this function is used to get the list from tauri and set it to the list variable
+   * @returns {Promise<void>}
+   *
+   */
   async function getList() {
     try {
       list = await parseTauriCommand<Project[]>("get_projects");
@@ -20,12 +25,21 @@
       console.error(error);
     }
   }
+
+  /**
+   * @description this function is used to update the list after a project is deleted
+   */
   async function updateProject() {
     await getList();
   }
 
   onMount(getList);
 
+  /**
+   * @description this function is used to compute the time between now and the creation of the project
+   * @param item {Project} the project to compute the time for
+   * @returns {number} the time between now and the creation of the project (days)
+   */
   function computeTime(item: Project): number {
     if (item.status !== Status.Active && item.status !== Status.Inactive)
       return 0;
@@ -35,6 +49,10 @@
     return diff;
   }
 
+  /**
+   * @description this function is used to notify the user if a project is not updated for more than 7 days
+   * @returns {void}
+   */
   function notify() {
     if ($hasInitialized === false) {
       list.forEach((item) => {

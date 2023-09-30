@@ -32,6 +32,10 @@ impl fmt::Display for Project {
     }
 }
 
+/**
+ * Stores the projects vector in the data.json file
+ * @ return Result<(), Box<dyn std::error::Error>> (should return Ok or an error)
+ */
 fn store_projects(
     projects: &Vec<Project>,
     file_path: &str,
@@ -48,6 +52,10 @@ fn store_projects(
     Ok(())
 }
 
+/**
+ * Reads the data.json file and returns a vector of Project structs
+ * @ return Result<Vec<Project>, Box<dyn std::error::Error>> (should return a vector of Project structs or an error)
+ */
 fn read_projects(file_path: &str) -> Result<Vec<Project>, Box<dyn std::error::Error>> {
     let file = File::open(file_path);
 
@@ -77,15 +85,28 @@ fn read_projects(file_path: &str) -> Result<Vec<Project>, Box<dyn std::error::Er
     Ok(projects)
 }
 
+/**
+ * Returns the path to the user's home directory
+ * @ return String (should return the path to the user's home directory)
+ */
 fn get_home_dir() -> String {
     return env::var("HOME").expect("Failed to get the user's home directory.");
 }
+
+/**
+ * Returns the path to the data.json file
+ * @ return String (should return the path to the data.json file)
+ */
 fn get_file_path() -> String {
     let home_dir = get_home_dir();
     let file_path = format!("{}/.projects/data.json", home_dir);
     file_path
 }
 
+/**
+ * Extracts the filename from a path and returns it as a String
+ * @ return Result<String, Box<dyn Error>> (should return a String as file.extension or an error)
+ */
 fn extract_filename(path: &str) -> Result<String, Box<dyn Error>> {
     let path = Path::new(path);
     let filename_osstr = path.file_name().ok_or("No file name present in path")?;
@@ -95,6 +116,11 @@ fn extract_filename(path: &str) -> Result<String, Box<dyn Error>> {
     Ok(filename_str.to_string())
 }
 
+/**
+ * Copies the logo to the .projects folder
+ * @ return Result<PathBuf, Box<dyn Error>> (should return the path to the logo or an error)
+ */
+ */
 fn copy_logo(project: &Project) -> Result<PathBuf, Box<dyn Error>> {
     let logo_path = match &project.logo {
         Some(path) => path,
@@ -114,7 +140,10 @@ fn copy_logo(project: &Project) -> Result<PathBuf, Box<dyn Error>> {
 }
 
 #[tauri::command]
-
+/**
+ * Returns the project with the given id
+ * @ return Option<Project> (should return the project with the given id or None if the project is not found)
+ */
 fn get_project(id: u32) -> Option<Project> {
     let projects = get_projects();
 
@@ -128,6 +157,9 @@ fn get_project(id: u32) -> Option<Project> {
 }
 
 #[tauri::command]
+/**
+ * Deletes the project with the given id
+ */
 async fn delete_project(id: u32) {
     let mut projects = get_projects();
     projects.retain(|project| project.id != id);
@@ -138,6 +170,10 @@ async fn delete_project(id: u32) {
 }
 
 #[tauri::command]
+/**
+ * Returns a vector of all projects
+ * @ return Vec<Project> (should return a vector of all projects)
+ */
 fn get_projects() -> Vec<Project> {
     let file_path = get_file_path();
     match read_projects(&file_path) {
@@ -149,6 +185,10 @@ fn get_projects() -> Vec<Project> {
     }
 }
 
+/**
+ * Adds a project to the data.json file
+ * @ return Result<bool, String> (should return true if the project was added successfully or an error)
+ */
 #[tauri::command]
 fn add_project(mut project: Project) -> Result<bool, String> {
     let mut projects = get_projects();
@@ -168,6 +208,9 @@ fn add_project(mut project: Project) -> Result<bool, String> {
     }
 }
 
+/**
+ * Runs the Tauri application
+ */
 fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![

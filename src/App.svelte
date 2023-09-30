@@ -1,4 +1,8 @@
 <script lang="ts">
+  // this component is the main component of the app
+  // it contains the sidebar and the routes
+  // it also contains the router
+  // the router is used to navigate between the routes
   import SideBar from "./lib/SideBar.svelte";
   import { Router, Route } from "svelte-routing";
 

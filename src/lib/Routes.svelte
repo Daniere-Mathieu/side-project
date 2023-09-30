@@ -1,4 +1,6 @@
 <script lang="ts">
+  // this component contains the routes of the app
+
   import { Route } from "svelte-routing";
   import Add from "./Add.svelte";
   import Details from "./Details.svelte";

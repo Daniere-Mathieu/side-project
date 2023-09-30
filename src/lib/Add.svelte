@@ -22,9 +22,14 @@
     logo: "",
   };
 
+  // this is used to get the options for the status (object to select array)
   let options = Object.values(Status) as string[];
   project.status = options[0];
 
+  /**
+   * @description this function is used to add a logo to the project
+   * @returns {Promise<void>}
+   */
   async function addLogo() {
     const selected = await open({
       multiple: false,
@@ -40,6 +45,10 @@
     }
   }
 
+  /**
+   * @description this function is used to save the data to the database
+   * @returns {Promise<void>}
+   */
   async function saveData() {
     try {
       if (!project.name || !project.description || !project.status) {

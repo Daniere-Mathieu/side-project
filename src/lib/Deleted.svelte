@@ -5,14 +5,20 @@
   const dispatch = createEventDispatcher();
 
   export let id: number;
+  /**
+   * @description this function is used to delete a project
+   * @returns {Promise<void>}
+   */
   async function deleteProject() {
-    console.log("here");
     await parseTauriCommand("delete_project", { id });
-    console.log("pass after delete");
     dispatch("deleted");
   }
+  /**
+   * @description this function is used to handle the keydown event for accesibility
+   * @param {KeyboardEvent} event
+   * @returns {void}
+   */
   function handleKeydown(event: KeyboardEvent) {
-    // Activate on Enter or Space keys
     if (event.key === "Enter" || event.key === " ") {
       deleteProject();
     }

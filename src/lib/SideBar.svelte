@@ -1,4 +1,7 @@
 <script lang="ts">
+  // this component is the sidebar of the app
+  // it contains the links to the routes
+  // it also contains the icons for the links
   import { Link } from "svelte-routing";
   import IoIosAdd from "svelte-icons/io/IoIosAdd.svelte";
   import IoMdHome from "svelte-icons/io/IoMdHome.svelte";
