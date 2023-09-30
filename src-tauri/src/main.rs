@@ -38,6 +38,7 @@ fn store_projects(
     let mut file = OpenOptions::new()
         .write(true)
         .create(true)
+        .truncate(true) // Important: clear the file content before writing
         .open(file_path)?;
 
     file.write_all(json.as_bytes())?;
@@ -83,41 +84,41 @@ fn get_file_path() -> String {
 }
 
 #[tauri::command]
-fn get_project(id: u32) -> Project {
+
+fn get_project(id: u32) -> Option<Project> {
     let projects = get_projects();
-    let mut final_project: Project = Project {
-        id: 1,
-        name: String::from("My Project"),
-        description: Some(String::from("This is a sample project.")),
-        status: None,
-        created_at: String::from("2023-05-24"),
-        updated_at: String::from("2023-05-25"),
-        logo: Some(String::from("logo.png")),
-    };
 
     for project in projects {
         if project.id == id {
-            final_project = project;
+            return Some(project);
         }
     }
-    final_project
+
+    None // Return None if the project with the given id is not found
 }
+
 #[tauri::command]
 async fn delete_project(id: u32) {
     let mut projects = get_projects();
-    if let Some(pos) = projects.iter().position(|project| project.id == id) {
-        let _trash = projects.remove(pos);
-        store_projects(&projects, &get_file_path()).unwrap();
-    } else {
-        println!("Project with ID {} not found.", id);
+    projects.retain(|project| project.id != id);
+    match store_projects(&projects, &get_file_path()) {
+        Ok(_) => println!("Project with ID {} deleted.", id),
+        Err(e) => eprintln!("Failed to store projects after deletion: {}", e),
     }
 }
+
 #[tauri::command]
 fn get_projects() -> Vec<Project> {
     let file_path = get_file_path();
-    let projects = read_projects(&file_path).unwrap();
-    projects
+    match read_projects(&file_path) {
+        Ok(projects) => projects,
+        Err(e) => {
+            eprintln!("Error reading projects: {}", e);
+            vec![] // return an empty vector in case of error
+        }
+    }
 }
+
 #[tauri::command]
 fn add_project(mut project: Project) -> bool {
     let mut projects = get_projects();

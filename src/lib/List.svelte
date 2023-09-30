@@ -32,11 +32,11 @@
     let created = moment(item.created_at);
     let diff = now.diff(created, "days");
     if (diff > 7)
-      sendNotification({
-        title: "Project",
-        body: `Project ${item.name} need to work on it ,the last update was ${diff} days ago`,
-      });
-    return diff;
+      // sendNotification({
+      //   title: "Project",
+      //   body: `Project ${item.name} need to work on it ,the last update was ${diff} days ago`,
+      // });
+      return diff;
   }
 </script>
 
