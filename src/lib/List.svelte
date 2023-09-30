@@ -1,20 +1,21 @@
 <script lang="ts">
-  import { parseTauriCommand } from "/src/utils/generics";
+  import { parseTauriCommand, tauriNotify } from "/src/utils/generics";
   import type { Project } from "src/project";
   import { Link } from "svelte-routing";
   import Deleted from "./Deleted.svelte";
-  import { onMount } from "svelte";
+  import { afterUpdate, onMount } from "svelte";
   import { convertFileSrc } from "@tauri-apps/api/tauri";
   import { Status } from "/src/project";
   import moment from "moment";
-  import { sendNotification } from "@tauri-apps/api/notification";
   import StatusIcon from "./StatusIcon.svelte";
+  import { hasInitialized } from "/src/store";
 
   let list: Project[] = [];
 
   async function getList() {
     try {
       list = await parseTauriCommand<Project[]>("get_projects");
+      notify();
     } catch (error) {
       console.error(error);
     }
@@ -31,12 +32,21 @@
     let now = moment();
     let created = moment(item.created_at);
     let diff = now.diff(created, "days");
-    if (diff > 7)
-      // sendNotification({
-      //   title: "Project",
-      //   body: `Project ${item.name} need to work on it ,the last update was ${diff} days ago`,
-      // });
-      return diff;
+    return diff;
+  }
+
+  function notify() {
+    if ($hasInitialized === false) {
+      list.forEach((item) => {
+        let itemDiff = computeTime(item);
+        if (itemDiff > 7)
+          tauriNotify({
+            title: item.name,
+            body: `Project ${item.name} need to work on it ,the last update was ${itemDiff} days ago`,
+          });
+      });
+      $hasInitialized = true;
+    }
   }
 </script>
 

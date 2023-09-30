@@ -2,9 +2,16 @@
   import { convertFileSrc, invoke } from "@tauri-apps/api/tauri";
   import { parseTauriCommand } from "/src/utils/generics";
   import { open } from "@tauri-apps/api/dialog";
+  import {
+    isPermissionGranted,
+    requestPermission,
+    sendNotification,
+  } from "@tauri-apps/api/notification";
 
   import { Status, type Project } from "/src/project";
+  import { navigate } from "svelte-routing/src/history";
 
+  let errorMessage: string = "";
   let project: Project = {
     id: 0,
     name: "",
@@ -32,27 +39,32 @@
       project.logo = selected;
     }
   }
+
   async function saveData() {
     try {
       if (!project.name || !project.description || !project.status) {
+        errorMessage = "Please fill all the fields";
         throw new Error("Please fill all the fields");
-        // ! notify user
       }
       project.created_at = new Date().toISOString();
       project.updated_at = new Date().toISOString();
-      let test: boolean = await parseTauriCommand<boolean>("add_project", {
+      await parseTauriCommand<boolean>("add_project", {
         project,
       });
-      console.log(test);
+
+      navigate("/");
     } catch (error) {
       console.error(error);
-      // TODO: Show error message
+      errorMessage = error.message;
     }
   }
 </script>
 
 <div class="add-container">
   <div class="add">
+    {#if errorMessage}
+      <p class="error">{errorMessage}</p>
+    {/if}
     <input
       type="text"
       bind:value={project.name}

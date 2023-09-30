@@ -4,11 +4,14 @@
 use serde::{Deserialize, Serialize};
 use serde_json;
 use std::env;
+use std::error::Error;
 use std::fmt;
-use std::fs::{self};
+use std::fs::{self, copy};
 use std::fs::{File, OpenOptions};
 use std::io::{self};
 use std::io::{Read, Write};
+use std::path::Path;
+use std::path::PathBuf;
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[derive(Serialize, Deserialize, Debug)]
@@ -83,6 +86,33 @@ fn get_file_path() -> String {
     file_path
 }
 
+fn extract_filename(path: &str) -> Result<String, Box<dyn Error>> {
+    let path = Path::new(path);
+    let filename_osstr = path.file_name().ok_or("No file name present in path")?;
+    let filename_str = filename_osstr
+        .to_str()
+        .ok_or("Failed to convert filename to string")?;
+    Ok(filename_str.to_string())
+}
+
+fn copy_logo(project: &Project) -> Result<PathBuf, Box<dyn Error>> {
+    let logo_path = match &project.logo {
+        Some(path) => path,
+        None => return Err("Logo path is None".into()),
+    };
+
+    let filename = extract_filename(logo_path)?;
+
+    let destination_path = format!("{}/.projects/{}", get_home_dir(), filename);
+
+    let source_path = Path::new(logo_path);
+    let dest_path = Path::new(&destination_path);
+
+    copy(source_path, &dest_path)?;
+
+    Ok(dest_path.to_path_buf())
+}
+
 #[tauri::command]
 
 fn get_project(id: u32) -> Option<Project> {
@@ -120,16 +150,22 @@ fn get_projects() -> Vec<Project> {
 }
 
 #[tauri::command]
-fn add_project(mut project: Project) -> bool {
+fn add_project(mut project: Project) -> Result<bool, String> {
     let mut projects = get_projects();
     if projects.len() == 0 {
         project.id = 1;
     } else {
         project.id = projects[projects.len() - 1].id + 1;
     }
+    match copy_logo(&project) {
+        Ok(path) => project.logo = Some(path.to_str().unwrap().to_string()),
+        Err(e) => eprintln!("Error copying logo: {}", e),
+    }
     projects.push(project);
-    store_projects(&projects, &get_file_path()).unwrap();
-    return true;
+    match store_projects(&projects, &get_file_path()) {
+        Ok(_) => Ok(true),
+        Err(e) => Err(format!("Error storing projects: {}", e)),
+    }
 }
 
 fn main() {
