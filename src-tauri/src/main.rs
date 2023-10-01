@@ -120,7 +120,6 @@ fn extract_filename(path: &str) -> Result<String, Box<dyn Error>> {
  * Copies the logo to the .projects folder
  * @ return Result<PathBuf, Box<dyn Error>> (should return the path to the logo or an error)
  */
- */
 fn copy_logo(project: &Project) -> Result<PathBuf, Box<dyn Error>> {
     let logo_path = match &project.logo {
         Some(path) => path,
@@ -139,11 +138,11 @@ fn copy_logo(project: &Project) -> Result<PathBuf, Box<dyn Error>> {
     Ok(dest_path.to_path_buf())
 }
 
-#[tauri::command]
 /**
  * Returns the project with the given id
  * @ return Option<Project> (should return the project with the given id or None if the project is not found)
  */
+#[tauri::command]
 fn get_project(id: u32) -> Option<Project> {
     let projects = get_projects();
 
@@ -156,10 +155,10 @@ fn get_project(id: u32) -> Option<Project> {
     None // Return None if the project with the given id is not found
 }
 
-#[tauri::command]
 /**
  * Deletes the project with the given id
  */
+#[tauri::command]
 async fn delete_project(id: u32) {
     let mut projects = get_projects();
     projects.retain(|project| project.id != id);
@@ -169,11 +168,11 @@ async fn delete_project(id: u32) {
     }
 }
 
-#[tauri::command]
 /**
  * Returns a vector of all projects
  * @ return Vec<Project> (should return a vector of all projects)
  */
+#[tauri::command]
 fn get_projects() -> Vec<Project> {
     let file_path = get_file_path();
     match read_projects(&file_path) {
