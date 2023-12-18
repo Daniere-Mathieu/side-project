@@ -8,7 +8,7 @@
   },
   "package": {
     "productName": "side-project",
-    "version": "0.0.1"
+    "version": "0.0.12"
   },
   "tauri": {
     "allowlist": {
@@ -31,7 +31,7 @@
       "protocol": {
         "all": false,
         "asset": true,
-        "assetScope": ["**"]
+        "assetScope": { "allow": ["**"], "requireLiteralLeadingDot": false }
       }
     },
     "bundle": {
