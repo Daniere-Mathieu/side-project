@@ -8,7 +8,7 @@
     "prepare": "husky install",
     "build": "vite build",
     "preview": "vite preview",
-    "lint": "eslint --ext .js,.ts,.svelte src",
+    "lint": "eslint --ext .js,.ts,.svelte src --fix",
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "tauri": "tauri",
     "tauri:build": "tauri build",
