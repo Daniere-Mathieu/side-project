@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { parseTauriCommand } from "/src/utils/generics";
+  import { parseTauriCommand } from "@src/utils/generics";
   import { createEventDispatcher } from "svelte";
   import IoMdTrash from "svelte-icons/io/IoMdTrash.svelte";
   const dispatch = createEventDispatcher();

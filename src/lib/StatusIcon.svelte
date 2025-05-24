@@ -1,6 +1,6 @@
 <script lang="ts">
   // this component is used to display the status of a project
-  import { Status } from "/src/project";
+  import { Status } from "@src/project";
   import IoMdPause from "svelte-icons/io/IoMdPause.svelte";
   import IoMdCheckmark from "svelte-icons/io/IoMdCheckmark.svelte";
   import IoIosClose from "svelte-icons/io/IoIosClose.svelte";
