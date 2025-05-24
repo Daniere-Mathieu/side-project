@@ -8,12 +8,13 @@ import type { Options } from "@tauri-apps/api/notification";
 
 export async function parseTauriCommand<T>(
   command: string,
-  args?: { [key: string]: any }
+  args?: { [key: string]: unknown }
 ): Promise<T> {
   try {
-    return JSON.parse(JSON.stringify(await invoke(command, args)));
+    return JSON.parse(JSON.stringify(await invoke(command, args))) as T;
   } catch (error) {
     console.error(error);
+    throw error;
   }
 }
 

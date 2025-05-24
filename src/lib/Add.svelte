@@ -1,14 +1,9 @@
 <script lang="ts">
-  import { convertFileSrc, invoke } from "@tauri-apps/api/tauri";
-  import { parseTauriCommand } from "/src/utils/generics";
+  import { convertFileSrc } from "@tauri-apps/api/tauri";
+  import { parseTauriCommand } from "@src/utils/generics";
   import { open } from "@tauri-apps/api/dialog";
-  import {
-    isPermissionGranted,
-    requestPermission,
-    sendNotification,
-  } from "@tauri-apps/api/notification";
 
-  import { Status, type Project } from "/src/project";
+  import { Status, type Project } from "@src/project";
   import { navigate } from "svelte-routing/src/history";
 
   let errorMessage: string = "";
@@ -18,19 +13,17 @@
     description: "",
     created_at: "",
     updated_at: "",
-    status: "",
     logo: "",
   };
 
-  // this is used to get the options for the status (object to select array)
   let options = Object.values(Status) as string[];
-  project.status = options[0];
+  project.status = Status[options[0] as keyof typeof Status];
 
   /**
    * @description this function is used to add a logo to the project
    * @returns {Promise<void>}
    */
-  async function addLogo() {
+  async function addLogo(): Promise<void> {
     const selected = await open({
       multiple: false,
       filters: [
@@ -40,7 +33,7 @@
         },
       ],
     });
-    if (selected) {
+    if (selected && typeof selected === "string") {
       project.logo = selected;
     }
   }
@@ -49,7 +42,7 @@
    * @description this function is used to save the data to the database
    * @returns {Promise<void>}
    */
-  async function saveData() {
+  async function saveData(): Promise<void> {
     try {
       if (!project.name || !project.description || !project.status) {
         errorMessage = "Please fill all the fields";

@@ -1,14 +1,14 @@
 <script lang="ts">
-  import { parseTauriCommand, tauriNotify } from "/src/utils/generics";
+  import { parseTauriCommand, tauriNotify } from "@src/utils/generics";
   import type { Project } from "src/project";
   import { Link } from "svelte-routing";
   import Deleted from "./Deleted.svelte";
   import { afterUpdate, onMount } from "svelte";
   import { convertFileSrc } from "@tauri-apps/api/tauri";
-  import { Status } from "/src/project";
+  import { Status } from "@src/project";
   import moment from "moment";
   import StatusIcon from "./StatusIcon.svelte";
-  import { hasInitialized } from "/src/store";
+  import { hasInitialized } from "@src/store";
 
   let list: Project[] = [];
 
@@ -96,7 +96,9 @@
                 >{computeTime(item)} days</span
               >
             </p>
-            <Link to="/project/{item.id}" class="yellow-text">learn more</Link>
+            <Link to="/project/?id={item.id}" class="yellow-text"
+              >learn more</Link
+            >
             <Deleted on:deleted={updateProject} id={item.id} />
           </div>
         </div>
